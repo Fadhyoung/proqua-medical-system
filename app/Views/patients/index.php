@@ -22,7 +22,8 @@
                 <th class="p-2 border">Gender</th>
                 <th class="p-2 border">Address</th>
                 <th class="p-2 border">DOB</th>
-                <th class="p-2 border">PCP</th>
+                <th class="p-2 border">Doctor</th>
+                <th class="p-2 border">Specialty</th>
                 <th class="p-2 border">Actions</th>
             </tr>
         </thead>
@@ -41,7 +42,6 @@
                 <option value="">Select Gender</option>
                 <option>Male</option>
                 <option>Female</option>
-                <option>Other</option>
             </select>
         </div>
 
@@ -54,13 +54,25 @@
         </div>
 
         <div class="mb-2">
-            <input type="text" id="PCP" placeholder="Primary Care Provider" class="border p-2 w-full">
+            <select id="PCP_ID" class="border p-2 w-full">
+                <option value="">Select Poli</option>
+            </select>
         </div>
 
         <button id="save" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
     </div>
 
     <script>
+        $(document).ready(() => {
+            fetchPatients();
+            $.get('/pcps/list', function(pcps) {
+                const select = $('#PCP_ID');
+                pcps.forEach(pcp => {
+                    select.append(`<option value="${pcp.PCP_ID}">${pcp.PCP_Specialty}</option>`);
+                });
+            });
+        });
+
         function fetchPatients(search = '') {
             console.log('patient fethced');
             $.get('/patients/list', {
@@ -73,7 +85,8 @@
             <td class="p-2 border">${p.Pat_Gender}</td>
             <td class="p-2 border">${p.Pat_Address}</td>
             <td class="p-2 border">${p.Pat_DOB}</td>
-            <td class="p-2 border">${p.PCP}</td>
+            <td class="p-2 border">${p.PCP_Name}</td>
+            <td class="p-2 border">${p.PCP_Specialty}</td>
             <td class="p-2 border">
               <button onclick="edit(${p.Pat_ID})" class="text-blue-500">Edit</button>
               <button onclick="remove(${p.Pat_ID})" class="text-red-500">Delete</button>
@@ -94,7 +107,7 @@
                     $('#Pat_Gender').val(patient.Pat_Gender);
                     $('#Pat_Address').val(patient.Pat_Address);
                     $('#Pat_DOB').val(patient.Pat_DOB);
-                    $('#PCP').val(patient.PCP);
+                    $('#PCP_ID').val(patient.PCP_ID);
                 }
             });
         }
@@ -128,7 +141,7 @@
                 Pat_Gender: $('#Pat_Gender').val(),
                 Pat_Address: $('#Pat_Address').val(),
                 Pat_DOB: $('#Pat_DOB').val(),
-                PCP: $('#PCP').val()
+                PCP_ID: $('#PCP_ID').val()
             };
 
             const url = id ? `/patients/update/${id}` : '/patients/create';

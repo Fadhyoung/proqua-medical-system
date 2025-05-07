@@ -18,9 +18,14 @@ class Patient extends BaseController
         $search = $this->request->getGet('search');
 
         if ($search) {
-            $data = $model->like('Pat_Name', $search)->findAll();
+            $data = $model->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty')
+                     ->join('pcps', 'pcps.PCP_ID = patients.PCP_ID')
+                     ->like('Pat_Name', $search)
+                     ->findAll();
         } else {
-            $data = $model->findAll();
+            $data = $model->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty')
+                     ->join('pcps', 'pcps.PCP_ID = patients.PCP_ID')
+                     ->findAll();
         }
 
         return $this->response->setJSON($data);

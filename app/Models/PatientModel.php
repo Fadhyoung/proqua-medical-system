@@ -8,26 +8,40 @@ class PatientModel extends Model
 {
     protected $table = 'patients';
     protected $primaryKey = 'Pat_ID';
-
-    protected $allowedFields = ['Pat_Name', 'Pat_Gender', 'Pat_Address', 'Pat_DOB', 'PCP'];
     protected $useTimestamps = true;
+    protected $allowedFields = [
+        'Pat_Name', 
+        'Pat_Gender', 
+        'Pat_Address', 
+        'Pat_DOB', 
+        'PCP_ID',
+        'Pat_Phone',
+        'Pat_Email',
+        'Pat_Insurance',
+        'Pat_Allergies'
+    ];
 
     protected $validationRules = [
-        'Pat_Name' => 'required|min_length[3]',
+        'Pat_Name' => 'required|min_length[3]|max_length[100]',
         'Pat_Gender' => 'required|in_list[Male,Female,Other]',
         'Pat_Address' => 'required|min_length[5]',
         'Pat_DOB' => 'required|valid_date',
-        'PCP' => 'required|min_length[3]'
+        'PCP_ID' => 'required|is_natural_no_zero',
+        'Pat_Phone' => 'permit_empty|max_length[20]',
+        'Pat_Email' => 'permit_empty|valid_email|max_length[100]',
+        'Pat_Insurance' => 'permit_empty|max_length[100]',
+        'Pat_Allergies' => 'permit_empty'
     ];
 
     protected $validationMessages = [
         'Pat_Name' => [
             'required' => 'Patient name is required.',
-            'min_length' => 'Name must be at least 3 characters.'
+            'min_length' => 'Name must be at least 3 characters.',
+            'max_length' => 'Name cannot exceed 100 characters.'
         ],
         'Pat_Gender' => [
             'required' => 'Gender is required.',
-            'in_list' => 'Gender must be Male, Female, or Other.'
+            'in_list' => 'Please select a valid gender.'
         ],
         'Pat_Address' => [
             'required' => 'Address is required.',
@@ -35,11 +49,29 @@ class PatientModel extends Model
         ],
         'Pat_DOB' => [
             'required' => 'Date of birth is required.',
-            'valid_date' => 'Date of birth must be a valid date.'
+            'valid_date' => 'Please enter a valid date of birth.'
         ],
-        'PCP' => [
-            'required' => 'Primary care provider is required.',
-            'min_length' => 'PCP must be at least 3 characters.'
+        'PCP_ID' => [
+            'required' => 'Primary care physician is required.',
+            'is_natural_no_zero' => 'Please select a valid physician.'
+        ],
+        'Pat_Email' => [
+            'valid_email' => 'Please enter a valid email address.',
+            'max_length' => 'Email cannot exceed 100 characters.'
         ]
     ];
+
+    public function getWithPCP($id = null)
+    {
+        $builder = $this->builder();
+        $builder->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty, pcps.PCP_Phone, pcps.PCP_Email');
+        $builder->join('pcps', 'pcps.PCP_ID = patients.PCP_ID');
+        
+        if ($id) {
+            $builder->where('patients.Pat_ID', $id);
+            return $builder->get()->getRow();
+        }
+        
+        return $builder->get()->getResult();
+    }
 }
