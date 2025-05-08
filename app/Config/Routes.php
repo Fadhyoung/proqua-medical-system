@@ -1,14 +1,15 @@
 <?php
 
+use App\Controllers\PatientController;
 use CodeIgniter\Router\RouteCollection;
 
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Patient::index');
-$routes->get('patients/list', 'Patient::list');
-$routes->post('patients/create', 'Patient::create');
-$routes->post('patients/update/(:num)', 'Patient::update/$1');
-$routes->delete('patients/delete/(:num)', 'Patient::delete/$1');
+$routes->get('/', 'PatientController::index');
+$routes->get('patients/list', 'PatientController::list');
+$routes->post('patients/create', 'PatientController::create');
+$routes->post('patients/update/(:num)', 'PatientController::update/$1');
+$routes->delete('patients/delete/(:num)', 'PatientController::delete/$1');
 
-$routes->get('pcps/list', 'Pcps::list');
+$routes->get('pcps/list', 'PcpsController::list');

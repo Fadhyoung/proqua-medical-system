@@ -17,8 +17,6 @@ class PatientModel extends Model
         'PCP_ID',
         'Pat_Phone',
         'Pat_Email',
-        'Pat_Insurance',
-        'Pat_Allergies'
     ];
 
     protected $validationRules = [
@@ -29,8 +27,6 @@ class PatientModel extends Model
         'PCP_ID' => 'required|is_natural_no_zero',
         'Pat_Phone' => 'permit_empty|max_length[20]',
         'Pat_Email' => 'permit_empty|valid_email|max_length[100]',
-        'Pat_Insurance' => 'permit_empty|max_length[100]',
-        'Pat_Allergies' => 'permit_empty'
     ];
 
     protected $validationMessages = [
@@ -60,18 +56,4 @@ class PatientModel extends Model
             'max_length' => 'Email cannot exceed 100 characters.'
         ]
     ];
-
-    public function getWithPCP($id = null)
-    {
-        $builder = $this->builder();
-        $builder->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty, pcps.PCP_Phone, pcps.PCP_Email');
-        $builder->join('pcps', 'pcps.PCP_ID = patients.PCP_ID');
-        
-        if ($id) {
-            $builder->where('patients.Pat_ID', $id);
-            return $builder->get()->getRow();
-        }
-        
-        return $builder->get()->getResult();
-    }
 }

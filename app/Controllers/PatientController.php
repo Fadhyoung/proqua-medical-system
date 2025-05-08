@@ -5,11 +5,14 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\PatientModel;
 
-class Patient extends BaseController
+class PatientController extends BaseController
 {
     public function index()
     {
-        return view('patients/index');
+        return view('layouts/main', [
+            'title' => 'Patient Management',
+            'content' => 'patients/index',
+        ]);
     }
 
     public function list()
@@ -46,11 +49,10 @@ class Patient extends BaseController
         return $this->response->setJSON(['status' => 'success']);
     }
 
-
     public function update($id)
     {
         $model = new PatientModel();
-        $data = $this->request->getRawInput();
+        $data = $this->request->getPost();
         $model->update($id, $data);
         return $this->response->setJSON(['status' => 'updated']);
     }
