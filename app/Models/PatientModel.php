@@ -17,8 +17,6 @@ class PatientModel extends Model
         'PCP_ID',
         'Pat_Phone',
         'Pat_Email',
-        'Pat_Insurance',
-        'Pat_Allergies'
     ];
 
     protected $validationRules = [
@@ -29,8 +27,6 @@ class PatientModel extends Model
         'PCP_ID' => 'required|is_natural_no_zero',
         'Pat_Phone' => 'permit_empty|max_length[20]',
         'Pat_Email' => 'permit_empty|valid_email|max_length[100]',
-        'Pat_Insurance' => 'permit_empty|max_length[100]',
-        'Pat_Allergies' => 'permit_empty'
     ];
 
     protected $validationMessages = [

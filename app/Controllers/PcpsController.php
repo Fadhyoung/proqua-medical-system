@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\PcpModel;
 
-class Pcps extends BaseController
+class PcpsController extends BaseController
 {
     public function list()
     {
