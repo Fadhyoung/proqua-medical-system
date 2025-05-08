@@ -56,18 +56,4 @@ class PatientModel extends Model
             'max_length' => 'Email cannot exceed 100 characters.'
         ]
     ];
-
-    public function getWithPCP($id = null)
-    {
-        $builder = $this->builder();
-        $builder->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty, pcps.PCP_Phone, pcps.PCP_Email');
-        $builder->join('pcps', 'pcps.PCP_ID = patients.PCP_ID');
-        
-        if ($id) {
-            $builder->where('patients.Pat_ID', $id);
-            return $builder->get()->getRow();
-        }
-        
-        return $builder->get()->getResult();
-    }
 }

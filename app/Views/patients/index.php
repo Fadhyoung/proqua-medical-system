@@ -1,16 +1,16 @@
-<div class="w-full h-full p-5 rounded-lg border bg-white">
+<div class="w-full h-auto p-5 rounded-lg border bg-white">
     <div class="mb-4 flex gap-2">
         <input type="text" id="search" placeholder="Search by name..." class="border p-2 rounded w-1/3">
         <?= view('components/button', [
             'label' => 'Add Patient',
             'id' => 'new',
             'variant' => 'primary',
-            'onclick' => 'showModal()'
+            'onclick' => '{openModalCreatePatient()}'
         ]) ?>
     </div>
 
-    <table class="min-w-full bg-white mb-4 border">
-        <thead class="bg-gray-200 text-left">
+    <table class="min-w-full p-2 bg-white mb-4 border">
+        <thead class="text-left bg-gray-50">
             <tr>
                 <th class="p-2 border">Name</th>
                 <th class="p-2 border">Gender</th>
@@ -26,7 +26,7 @@
 
     <form id="modal-backdrop" onsubmit="handlePatientForm(event)" class="fixed inset-0 opacity-0 pointer-events-none flex items-center justify-center hidden z-50 bg-black">
 
-        <div id="form-modal" class="w-full p-4 max-w-md relative rounded shadow-mdrounded shadow-md bg-white ">
+        <div id="form-modal" class="w-full max-w-md p-4 space-y-5 relative rounded shadow-mdrounded shadow-md bg-white ">
 
             <input type="hidden" id="Pat_ID">
 
@@ -36,6 +36,7 @@
             </div>
 
             <div class="mb-2">
+                <label for="Pat_Gender" class="block text-sm font-medium text-gray-700 mb-1">Gender:</label>
                 <select id="Pat_Gender" class="border p-2 w-full" required>
                     <option value="">Select Gender</option>
                     <option>Male</option>
@@ -44,14 +45,17 @@
             </div>
 
             <div class="mb-2">
+                <label for="Pat_Address" class="block text-sm font-medium text-gray-700 mb-1">Address:</label>
                 <textarea id="Pat_Address" placeholder="Address" class="border p-2 w-full" required></textarea>
             </div>
 
             <div class="mb-2">
+                <label for="Pat_DOB" class="block text-sm font-medium text-gray-700 mb-1">Date of birth:</label>
                 <input type="date" id="Pat_DOB" class="border p-2 w-full" required>
             </div>
 
             <div class="mb-2">
+                <label for="PCP_ID" class="block text-sm font-medium text-gray-700 mb-1">Primary care provider:</label>
                 <select id="PCP_ID" class="border p-2 w-full" required>
                     <option value="">Select Poli</option>
                 </select>
@@ -75,6 +79,21 @@
     });
 
     const backdrop = $('#modal-backdrop');
+
+    function resetAndShowModal() {
+        $('#patient-form')[0].reset();
+        $('#Pat_ID').val('');
+    }
+
+    function openModalCreatePatient() {
+        $('#Pat_ID').val('');
+        $('#Pat_Name').val('');
+        $('#Pat_Gender').val('');
+        $('#Pat_Address').val('');
+        $('#Pat_DOB').val('');
+        $('#PCP_ID').val('');
+        showModal();
+    }
 
     function showModal() {
         backdrop.removeClass('hidden opacity-0 pointer-events-none')
@@ -157,7 +176,7 @@
                 success: function(response) {
                     alert('Patient saved successfully!');
                     fetchPatients();
-                    $('#form-modal').hide();
+                    hideModal();
                 },
             });
         }

@@ -49,7 +49,6 @@ class PatientController extends BaseController
         return $this->response->setJSON(['status' => 'success']);
     }
 
-
     public function update($id)
     {
         $model = new PatientModel();
