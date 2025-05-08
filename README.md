@@ -17,7 +17,7 @@ Before you begin, make sure you have these installed:
 Clone the repository and install dependencies:
 ```
 git clone git@github.com:Fadhyoung/proqua-medical-system.git
-cd proqua-patient-crud
+cd proqua-medical-system 
 composer install
 ```
 
