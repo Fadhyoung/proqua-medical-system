@@ -1,5 +1,6 @@
-<div class="w-full h-auto p-5 rounded-lg border bg-white">
-    <div class="mb-4 flex gap-2">
+<div class="w-full h-auto relative overflow-auto">
+
+    <div class="mb-4 p-5 flex gap-2 border rounded-lg bg-white">
         <input type="text" id="search" placeholder="Search by name..." class="border p-2 rounded w-1/3">
         <?= view('components/button', [
             'label' => 'Add Patient',
@@ -9,20 +10,22 @@
         ]) ?>
     </div>
 
-    <table class="min-w-full p-2 bg-white mb-4 border">
-        <thead class="text-left bg-gray-50">
-            <tr>
-                <th class="p-2 border">Name</th>
-                <th class="p-2 border">Gender</th>
-                <th class="p-2 border">Address</th>
-                <th class="p-2 border">DOB</th>
-                <th class="p-2 border">Doctor</th>
-                <th class="p-2 border">Specialty</th>
-                <th class="p-2 border">Actions</th>
-            </tr>
-        </thead>
-        <tbody id="patient-table"></tbody>
-    </table>
+    <div class="mt-5 p-5 border rounded-lg bg-white overflow-y-auto max-h-[calc(100vh-15rem)]">
+        <table class="min-w-full p-2 bg-white mb-4 border">
+            <thead class="text-left bg-gray-50">
+                <tr>
+                    <th class="p-2 border">Name</th>
+                    <th class="p-2 border">Gender</th>
+                    <th class="p-2 border">Address</th>
+                    <th class="p-2 border">DOB</th>
+                    <th class="p-2 border">Doctor</th>
+                    <th class="p-2 border">Specialty</th>
+                    <th class="p-2 border">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="patient-table"></tbody>
+        </table>
+    </div>
 
     <form id="modal-backdrop" onsubmit="handlePatientForm(event)" class="fixed inset-0 opacity-0 pointer-events-none flex items-center justify-center hidden z-50 bg-black">
 
