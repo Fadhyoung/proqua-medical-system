@@ -10,7 +10,7 @@
         ]) ?>
     </div>
 
-    <div class="mt-5 p-5 border rounded-lg bg-white overflow-y-auto max-h-[calc(100vh-15rem)]">
+    <div class="mt-5 p-5 border rounded-lg bg-white overflow-y-auto max-h-[calc(100vh-18rem)]">
         <table class="min-w-full p-2 bg-white mb-4 border">
             <thead class="text-left bg-gray-50">
                 <tr>
@@ -25,6 +25,11 @@
             </thead>
             <tbody id="patient-table"></tbody>
         </table>
+    </div>
+
+    <div class="flex justify-between items-center mt-4">
+        <div id="pagination-info" class="text-sm text-gray-600">aa</div>
+        <div class="flex gap-2" id="pagination-controls">aa</div>
     </div>
 
     <form id="modal-backdrop" onsubmit="handlePatientForm(event)" class="fixed inset-0 opacity-0 pointer-events-none flex items-center justify-center hidden z-50 bg-black">
@@ -114,30 +119,18 @@
         }
     });
 
-    function fetchPatients(search = '') {
+    function fetchPatients(search = '', page = 1) {
         $.ajax({
             url: '/patients/list',
             method: 'GET',
             data: {
-                search
+                search,
+                page
             },
-            success: function(data) {
-                let rows = '';
-                data.forEach(p => {
-                    rows += `<tr>
-                    <td class="p-2 border">${p.Pat_Name}</td>
-                    <td class="p-2 border">${p.Pat_Gender}</td>
-                    <td class="p-2 border">${p.Pat_Address}</td>
-                    <td class="p-2 border">${p.Pat_DOB}</td>
-                    <td class="p-2 border">${p.PCP_Name}</td>
-                    <td class="p-2 border">${p.PCP_Specialty}</td>
-                    <td class="p-2 border flex gap-5">
-                        <button onclick="edit(${p.Pat_ID})" class="py-1 px-2 text-white rounded-md bg-blue-500">Edit</button>
-                        <button onclick="remove(${p.Pat_ID})" class="py-1 px-2 text-white rounded-md bg-red-500">Delete</button>
-                    </td>
-                </tr>`;
-                });
-                $('#patient-table').html(rows);
+            success: function(response) {
+                console.log(response.pager);
+                renderPatients(response.data);
+                renderPagination(response.pager);
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching patients:', error);
@@ -145,13 +138,71 @@
         });
     }
 
+    function renderPagination(pager) {
+        const controls = $('#pagination-controls');
+        const info = $('#pagination-info');
+        controls.empty();
+
+        info.text(`Showing ${pager.currentPage} of ${pager.totalPages} (${pager.totalItems} patients)`);
+
+        if (pager.currentPage > 1) {
+            controls.append(`
+            <button onclick="fetchPatients($('#search').val(), ${pager.currentPage - 1})" 
+                    class="px-3 py-1 border rounded">
+                Previous
+            </button>
+        `);
+        }
+
+        const startPage = Math.max(1, pager.currentPage - 2);
+        const endPage = Math.min(pager.totalPages, pager.currentPage + 2);
+
+        for (let i = startPage; i <= endPage; i++) {
+            controls.append(`
+            <button onclick="fetchPatients($('#search').val(), ${i})" 
+                    class="px-3 py-1 border rounded ${i === pager.currentPage ? 'bg-blue-500 text-white' : ''}">
+                ${i}
+            </button>
+        `);
+        }
+
+        if (pager.currentPage < pager.totalPages) {
+            controls.append(`
+            <button onclick="fetchPatients($('#search').val(), ${pager.currentPage + 1})" 
+                    class="px-3 py-1 border rounded">
+                Next
+            </button>
+        `);
+        }
+    }
+
+    function renderPatients(patients) {
+        let rows = '';
+        patients.forEach(p => {
+            rows += `<tr>
+            <td class="p-2 border">${p.Pat_Name}</td>
+            <td class="p-2 border">${p.Pat_Gender}</td>
+            <td class="p-2 border">${p.Pat_Address}</td>
+            <td class="p-2 border">${p.Pat_DOB}</td>
+            <td class="p-2 border">${p.PCP_Name}</td>
+            <td class="p-2 border">${p.PCP_Specialty}</td>
+            <td class="p-2 border flex gap-5">
+                <button onclick="edit(${p.Pat_ID})" class="py-1 px-2 text-white rounded-md bg-blue-500">Edit</button>
+                <button onclick="remove(${p.Pat_ID})" class="py-1 px-2 text-white rounded-md bg-red-500">Delete</button>
+            </td>
+        </tr>`;
+        });
+        $('#patient-table').html(rows);
+    }
+
     function edit(id) {
+        console.log('hit here');
         $.ajax({
             url: '/patients/list',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                const patient = data.find(p => p.Pat_ID == id);
+                const patient = data.data.find(p => p.Pat_ID == id);
                 if (patient) {
                     showModal();
                     $('#Pat_ID').val(patient.Pat_ID);

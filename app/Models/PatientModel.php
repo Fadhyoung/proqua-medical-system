@@ -10,10 +10,10 @@ class PatientModel extends Model
     protected $primaryKey = 'Pat_ID';
     protected $useTimestamps = true;
     protected $allowedFields = [
-        'Pat_Name', 
-        'Pat_Gender', 
-        'Pat_Address', 
-        'Pat_DOB', 
+        'Pat_Name',
+        'Pat_Gender',
+        'Pat_Address',
+        'Pat_DOB',
         'PCP_ID',
         'Pat_Phone',
         'Pat_Email',
@@ -21,7 +21,7 @@ class PatientModel extends Model
 
     protected $validationRules = [
         'Pat_Name' => 'required|min_length[3]|max_length[100]',
-        'Pat_Gender' => 'required|in_list[Male,Female,Other]',
+        'Pat_Gender' => 'required|in_list[Male,Female]',
         'Pat_Address' => 'required|min_length[5]',
         'Pat_DOB' => 'required|valid_date',
         'PCP_ID' => 'required|is_natural_no_zero',
@@ -56,4 +56,36 @@ class PatientModel extends Model
             'max_length' => 'Email cannot exceed 100 characters.'
         ]
     ];
+
+    public function getPatientsWithPCP(string $search = null, bool $pagination= false, int $itemsPerPage = 10, int $page = 1)
+    {
+        $builder = $this->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty')
+            ->join('pcps', 'pcps.PCP_ID = patients.PCP_ID');
+
+        if ($search) {
+            $builder->like('Pat_Name', $search);
+        }
+
+        if ($pagination) {
+            return [
+                'patients' => $builder->paginate($itemsPerPage, 'default', $page),
+                'pager' => $this->pager
+            ];
+        }
+
+        return $builder->findAll();
+    }
+
+    public function createPatient(array $data)
+    {
+        try {
+            if ($this->save($data)) {
+                return $this->insertID();
+            }
+            return false;
+        } catch (\Exception $e) {
+            log_message('error', 'Patient creation failed: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

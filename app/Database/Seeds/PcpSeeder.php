@@ -31,7 +31,6 @@ class PcpSeeder extends Seeder
             ];
         }
 
-        // Using Query Builder
         $this->db->table('pcps')->insertBatch($data);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\PatientModel;
 
 class PatientController extends BaseController
 {
+
     public function index()
     {
         return view('layouts/main', [
@@ -19,19 +20,18 @@ class PatientController extends BaseController
     {
         $model = new PatientModel();
         $search = $this->request->getGet('search');
+        $page = $this->request->getGet('page', FILTER_VALIDATE_INT) ?? 1;
+    
+        $result = $model->getPatientsWithPCP($search, true, 15, $page);
 
-        if ($search) {
-            $data = $model->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty')
-                     ->join('pcps', 'pcps.PCP_ID = patients.PCP_ID')
-                     ->like('Pat_Name', $search)
-                     ->findAll();
-        } else {
-            $data = $model->select('patients.*, pcps.PCP_Name, pcps.PCP_Specialty')
-                     ->join('pcps', 'pcps.PCP_ID = patients.PCP_ID')
-                     ->findAll();
-        }
-
-        return $this->response->setJSON($data);
+        return $this->response->setJSON([
+            'data' => $result['patients'],
+            'pager' => [
+                'currentPage' => $result['pager']->getCurrentPage(),
+                'totalPages' => $result['pager']->getPageCount(),
+                'totalItems' => $result['pager']->getTotal()
+            ]
+        ]);
     }
 
     public function create()
@@ -39,7 +39,7 @@ class PatientController extends BaseController
         $model = new PatientModel();
         $data = $this->request->getPost();
 
-        if (!$model->save($data)) {
+        if (!$model->createPatient($data)) {
             return $this->response->setStatusCode(500)->setJSON([
                 'status' => 'error',
                 'errors' => $model->errors()
