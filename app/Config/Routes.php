@@ -25,4 +25,3 @@ $routes->get('logout', [AuthController::class, 'logout']);
 $routes->get('deleteUser', [AuthController::class, 'deleteUser']);
 $routes->get('register', [RegisterController::class, 'registerView']);
 $routes->post('register', [RegisterController::class, 'registerAction']);
-
