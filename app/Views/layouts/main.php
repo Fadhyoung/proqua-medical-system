@@ -11,14 +11,19 @@
 
 <body class="p-10 h-screen bg-gradient-to-tr from-blue-50 to-sky-50">
 
-    <div class="flex h-full border-4 border-white rounded-2xl shadow-xl bg-gray-50 overflow-hidden">
-        <aside class="w-64 bg-white shadow-md p-4">
-            <h1 class="text-2xl font-bold mb-4">App Menu</h1>
-            <ul class="pl-5 mt-10 space-y-4 text-gray-500">
-                <li><a href="/">Patients</a></li>
-                <li><a href="/doctors">Doctors</a></li>
-            </ul>
-        </aside>
+    <div class="flex border-4 border-white rounded-2xl shadow-xl bg-gray-50 overflow-hidden">
+        <div class="w-64 p-4 flex flex-col justify-between bg-white shadow-md">
+            <div>
+                <h1 class="text-2xl font-bold mb-4">App Menu</h1>
+                <div class="pl-5 mt-10 flex flex-col justify-between space-y-4 text-gray-500">
+                    <a href="/">Patients</a>
+                    <a href="/doctors">Doctors</a>
+                </div>
+            </div>
+            <div class="pl-5">
+                <a href="/logout" class="text-red-500">Logout</a>
+            </div>
+        </div>
 
         <main class="flex-1 p-6 bg-slite-50 overflow-hidden">
             <?= $this->include($content) ?>

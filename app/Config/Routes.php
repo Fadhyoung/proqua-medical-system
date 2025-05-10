@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\AuthController;
 use App\Controllers\DoctorController;
 use App\Controllers\PatientController;
 use App\Controllers\PcpsController;
@@ -17,3 +18,7 @@ $routes->delete('patients/delete/(:num)', [PatientController::class, 'delete/$1'
 $routes->get('pcps/list', [PcpsController::class, 'list']);
 
 $routes->get('/doctors', [DoctorController::class, 'index']);
+
+service('auth')->routes($routes);
+$routes->post('logout', [AuthController::class, 'logout']);
+
