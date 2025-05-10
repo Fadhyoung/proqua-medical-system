@@ -4,6 +4,7 @@ use App\Controllers\AuthController;
 use App\Controllers\DoctorController;
 use App\Controllers\PatientController;
 use App\Controllers\PcpsController;
+use App\Controllers\RegisterController;
 use CodeIgniter\Router\RouteCollection;
 
 /**
@@ -19,6 +20,8 @@ $routes->get('pcps/list', [PcpsController::class, 'list']);
 
 $routes->get('/doctors', [DoctorController::class, 'index']);
 
-service('auth')->routes($routes);
+service('auth')->routes($routes, ['except' => ['register']]);
 $routes->post('logout', [AuthController::class, 'logout']);
+$routes->get('register', [RegisterController::class, 'registerView']);
+$routes->post('register', [RegisterController::class, 'registerAction']);
 

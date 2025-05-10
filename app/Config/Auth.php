@@ -46,9 +46,9 @@ class Auth extends ShieldAuth
      * --------------------------------------------------------------------
      */
     public array $views = [
-        'login'                       => '\CodeIgniter\Shield\Views\login',
+        'login'                       => '\App\Views\Shield\login',
         'register'                    => '\CodeIgniter\Shield\Views\register',
-        'layout'                      => '\CodeIgniter\Shield\Views\layout',
+        'layout'                      => '\App\Views\layouts\auth',
         'action_email_2fa'            => '\CodeIgniter\Shield\Views\email_2fa_show',
         'action_email_2fa_verify'     => '\CodeIgniter\Shield\Views\email_2fa_verify',
         'action_email_2fa_email'      => '\CodeIgniter\Shield\Views\Email\email_2fa_email',
@@ -74,7 +74,7 @@ class Auth extends ShieldAuth
      * to apply any logic you may need.
      */
     public array $redirects = [
-        'register'          => '/',
+        'register'          => '/dashboard',
         'login'             => '/',
         'logout'            => 'login',
         'force_reset'       => '/',
@@ -437,7 +437,9 @@ class Auth extends ShieldAuth
     public function loginRedirect(): string
     {
         $session = session();
-        $url     = $session->getTempdata('beforeLoginUrl') ?? setting('Auth.redirects')['login'];
+        $url     = $session->getTempdata('beforeLoginUrl') ?? Auth()->user()->inGroup('admin')
+            ? '/dashboard'
+            : setting('Auth.redirects')['login'];
 
         return $this->getUrl($url);
     }
@@ -459,7 +461,10 @@ class Auth extends ShieldAuth
      */
     public function registerRedirect(): string
     {
-        $url = setting('Auth.redirects')['register'];
+
+        $url = auth()->user()->inGroup('admin')
+            ? '/dashboard'
+            : setting('Auth.redirects')['register'];
 
         return $this->getUrl($url);
     }
