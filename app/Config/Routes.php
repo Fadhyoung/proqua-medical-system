@@ -21,7 +21,8 @@ $routes->get('pcps/list', [PcpsController::class, 'list']);
 $routes->get('/doctors', [DoctorController::class, 'index']);
 
 service('auth')->routes($routes, ['except' => ['register']]);
-$routes->post('logout', [AuthController::class, 'logout']);
+$routes->get('logout', [AuthController::class, 'logout']);
+$routes->get('deleteUser', [AuthController::class, 'deleteUser']);
 $routes->get('register', [RegisterController::class, 'registerView']);
 $routes->post('register', [RegisterController::class, 'registerAction']);
 

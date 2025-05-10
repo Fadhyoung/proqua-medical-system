@@ -20,8 +20,9 @@
                     <a href="/doctors">Doctors</a>
                 </div>
             </div>
-            <div class="pl-5">
+            <div class="pl-5 flex flex-col gap-5">
                 <a href="/logout" class="text-red-500">Logout</a>
+                <a href="/deleteUser" class="text-red-500">Delete your account</a>
             </div>
         </div>
 

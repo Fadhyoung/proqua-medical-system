@@ -11,4 +11,15 @@ class AuthController extends Controller
         auth()->logout();
         return redirect()->to('/login');
     }
+
+    public function deleteUser()
+    {
+        $users = auth()->getProvider();
+
+        $user = auth()->user();
+
+        $users->delete($user->id, true);
+
+        return redirect()->to('/login');
+    }
 }
