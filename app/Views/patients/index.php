@@ -78,7 +78,7 @@
 <script>
     $(document).ready(() => {
         fetchPatients();
-        $.get('/pcps/list', function(pcps) {
+        $.get('api/v1/pcps', function(pcps) {
             const select = $('#PCP_ID');
             pcps.forEach(pcp => {
                 select.append(`<option value="${pcp.PCP_ID}">${pcp.PCP_Specialty}</option>`);
@@ -121,7 +121,7 @@
 
     function fetchPatients(search = '', page = 1) {
         $.ajax({
-            url: '/patients/list',
+            url: 'api/v1/patients',
             method: 'GET',
             data: {
                 search,
@@ -196,9 +196,8 @@
     }
 
     function edit(id) {
-        console.log('hit here');
         $.ajax({
-            url: '/patients/list',
+            url: 'api/v1/patients',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -225,7 +224,7 @@
     function remove(id) {
         if (confirm('Are you sure?')) {
             $.ajax({
-                url: '/patients/delete/' + id,
+                url: 'api/v1/patients/' + id,
                 type: 'DELETE',
                 success: function(response) {
                     alert('Patient saved successfully!');
@@ -248,12 +247,13 @@
             PCP_ID: $('#PCP_ID').val()
         };
 
-        const url = id ? `/patients/update/${id}` : '/patients/create';
+        const url = id ? `api/v1/patients/${id}` : 'api/v1/patients';
+        const method = id ? `PUT` : 'POST';
 
         $.ajax({
             url: url,
-            method: 'POST',
-            data: data,
+            method: method,
+            data: JSON.stringify(data),
             success: function(response) {
                 alert('Patient saved successfully!');
                 fetchPatients();
