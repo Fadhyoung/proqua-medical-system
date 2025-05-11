@@ -37,7 +37,9 @@ class PatientController extends BaseController
     public function create()
     {
         $model = new PatientModel();
-        $data = $this->request->getPost();
+        $data = $this->request->getJSON(true);
+
+        log_message('alert', 'the request for create patient is ' . print_r($data, true));
 
         if (!$model->createPatient($data)) {
             return $this->response->setStatusCode(500)->setJSON([
@@ -52,7 +54,8 @@ class PatientController extends BaseController
     public function update($id)
     {
         $model = new PatientModel();
-        $data = $this->request->getPost();
+        $data = $this->request->getJSON();
+        log_message('alert', 'the data request is' . print_r($data, true));
         $model->update($id, $data);
         return $this->response->setJSON(['status' => 'updated']);
     }
